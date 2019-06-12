@@ -18,7 +18,7 @@ try: # python 2
 except ImportError: # python 3
     from http.server import BaseHTTPRequestHandler
 
-from agavepy.agave import Agave
+from tapispy.tapis import Tapis
 
 
 # Sample successful responses from the agave api.
@@ -257,7 +257,7 @@ class TestMockServer(MockServer):
 
         try:
             local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-            agave = Agave(api_server=local_uri)
+            agave = Tapis(api_server=local_uri)
             agave.token = "mock-access-token"
             agave.created_at = str(int(time.time()))
             agave.expires_in = str(14400)
@@ -282,7 +282,7 @@ class TestMockServer(MockServer):
 
         try:
             local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-            agave = Agave(api_server=local_uri)
+            agave = Tapis(api_server=local_uri)
             agave.token = "mock-access-token"
             agave.created_at = str(int(time.time()))
             agave.expires_in = str(14400)
@@ -306,7 +306,7 @@ class TestMockServer(MockServer):
 
         try:
             local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-            agave = Agave(api_server=local_uri)
+            agave = Tapis(api_server=local_uri)
             agave.token = "mock-access-token"
             agave.created_at = str(int(time.time()))
             agave.expires_in = str(14400)
@@ -327,7 +327,7 @@ class TestMockServer(MockServer):
         call should simply be able to return successfully.
         """
         local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-        agave = Agave(api_server=local_uri)
+        agave = Tapis(api_server=local_uri)
         agave.token = "mock-access-token"
         agave.created_at = str(int(time.time()))
         agave.expires_in = str(14400)
@@ -342,7 +342,7 @@ class TestMockServer(MockServer):
         call should simply be able to return successfully.
         """
         local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-        agave = Agave(api_server=local_uri)
+        agave = Tapis(api_server=local_uri)
         agave.token = "mock-access-token"
         agave.created_at = str(int(time.time()))
         agave.expires_in = str(14400)
@@ -357,7 +357,7 @@ class TestMockServer(MockServer):
         call should simply be able to return successfully.
         """
         local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-        agave = Agave(api_server=local_uri)
+        agave = Tapis(api_server=local_uri)
         agave.token = "mock-access-token"
         agave.created_at = str(int(time.time()))
         agave.expires_in = str(14400)
@@ -369,7 +369,7 @@ class TestMockServer(MockServer):
         """ Test files import
         """
         local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-        agave = Agave(api_server=local_uri)
+        agave = Tapis(api_server=local_uri)
         agave.token = "mock-access-token"
         agave.created_at = str(int(time.time()))
         agave.expires_in = str(14400)

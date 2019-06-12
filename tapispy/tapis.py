@@ -19,14 +19,14 @@ import jinja2
 import dateutil.parser
 import requests
 
-from agavepy.tenants import tenant_list
-from agavepy.clients import (clients_create, clients_delete, clients_list, 
-    clients_subscribe, clients_subscribtions)
-from agavepy.tokens import token_create, refresh_token
-from agavepy.utils import load_config, save_config
-from agavepy.files import (files_copy, files_delete, files_download, 
-    files_history, files_import, files_list, files_mkdir, files_move, 
-    files_pems_delete, files_pems_list, files_pems_update, files_upload)
+from tapispy.tenants import tenant_list
+from tapispy.clients import (clients_create, clients_delete, clients_list,
+                             clients_subscribe, clients_subscribtions)
+from tapispy.tokens import token_create, refresh_token
+from tapispy.utils import load_config, save_config
+from tapispy.files import (files_copy, files_delete, files_download,
+                           files_history, files_import, files_list, files_mkdir, files_move,
+                           files_pems_delete, files_pems_list, files_pems_update, files_upload)
 
 
 import sys
@@ -226,7 +226,7 @@ class AgaveError(Exception):
     pass
 
 
-class Agave(object):
+class Tapis(object):
 
     PARAMS = [
         # param name, mandatory?, attr_name, default
@@ -308,7 +308,7 @@ class Agave(object):
         d.update({attr: getattr(self, attr) for _, _, attr, _ in self.PARAMS \
                          if not attr in ['resources', '_token', '_refresh_token', 'header_name', 'jwt', 'password', 'token_callback']})
         # if we are writing to the .agave/current file, modify the fields accordingly
-        if Agave.agpy_path() == Agave.agavecurrent_path():
+        if Tapis.agpy_path() == Tapis.agavecurrent_path():
             d['tenantid'] = d.pop('tenant_id', '')
             d['apisecret'] = d.pop('api_secret', '')
             d['apikey'] = d.pop('api_key', '')
@@ -341,16 +341,16 @@ class Agave(object):
     @classmethod
     def _read_clients(cls):
         """Read clients from the .agpy file."""
-        with open(Agave.agpy_path()) as agpy:
+        with open(Tapis.agpy_path()) as agpy:
             clients = json.loads(agpy.read())
         # if we are reading an '.agave/current' file, we need to do some translation
-        if Agave.agpy_path() == Agave.agavecurrent_path():
+        if Tapis.agpy_path() == Tapis.agavecurrent_path():
             # first, make sure we have a list; in past versions of the CLI, the current file was a
             # single JSON object
             if not isinstance(clients, list):
                 clients = [clients]
             for client in clients:
-                # convert CLI keys to agavepy keys:
+                # convert CLI keys to tapispy keys:
                 for k, v in list(client.items()):
                     if k == 'tenantid':
                         client['tenant_id'] = v
@@ -371,45 +371,45 @@ class Agave(object):
     @classmethod
     def _restore_client(cls, **kwargs):
         """Restore a client from a specific attr."""
-        clients = Agave._read_clients()
+        clients = Tapis._read_clients()
         if len(clients) == 0:
             raise AgaveError("No clients found.")
         # if no attribute was passed, we'll just restore the first client in the list:
         if len(list(kwargs.items())) == 0:
-            return Agave(**clients[0])
+            return Tapis(**clients[0])
         for k, v in list(kwargs.items()):
             for client in clients:
                 if client.get(k) == v:
-                    return Agave(**client)
+                    return Tapis(**client)
         raise AgaveError("No matching client found.")
 
     @classmethod
     def restore(cls, api_key=None, client_name=None, tenant_id=None):
         """Public API to restore an agave client from a file."""
         if api_key:
-            return Agave._restore_client(api_key=api_key)
+            return Tapis._restore_client(api_key=api_key)
         elif client_name:
-            return Agave._restore_client(client_name=client_name)
+            return Tapis._restore_client(client_name=client_name)
         elif tenant_id:
-            return Agave._restore_client(tenant_id=tenant_id)
+            return Tapis._restore_client(tenant_id=tenant_id)
         else:
-            return Agave._restore_client()
+            return Tapis._restore_client()
 
     def _write_client(self):
         """Update the .agpy file with the description of a client."""
         # if we are reading the '.agave/current' file, we need to use that format and simply update
         # a few fields
-        if Agave.agpy_path() == Agave.agavecurrent_path():
-            with open(Agave.agpy_path(), 'r') as agpy:
+        if Tapis.agpy_path() == Tapis.agavecurrent_path():
+            with open(Tapis.agpy_path(), 'r') as agpy:
                 old_data = json.loads(agpy.read())
             new_data = self.to_dict()
             old_data['access_token'] = new_data['access_token']
             old_data['refresh_token'] = new_data['refresh_token']
-            with open(Agave.agpy_path(), 'w') as agpy:
+            with open(Tapis.agpy_path(), 'w') as agpy:
                 agpy.write(json.dumps(new_data))
 
         else:
-            clients = Agave._read_clients()
+            clients = Tapis._read_clients()
             new_clients = []
             for client in clients:
                 # if this is the current client, update with the latest representation
@@ -418,7 +418,7 @@ class Agave(object):
                 else:
                     # otherwise, write what is already there.
                     new_clients.append(client)
-            with open(Agave.agpy_path(), 'w') as agpy:
+            with open(Tapis.agpy_path(), 'w') as agpy:
                 agpy.write(json.dumps(new_clients))
 
     def refresh_aris(self):

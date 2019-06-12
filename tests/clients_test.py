@@ -18,7 +18,7 @@ except ImportError:
     from mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from agavepy.agave import Agave
+from tapispy.tapis import Tapis
 
 
 # Sample successful responses from the agave api.
@@ -132,8 +132,8 @@ class TestMockServer(MockServer):
         MockServer.serve.__func__(cls, MockServerClientEndpoints)
 
 
-    @patch("agavepy.agave.input")
-    @patch("agavepy.clients.create.getpass.getpass")
+    @patch("tapispy.agave.input")
+    @patch("tapispy.clients.create.getpass.getpass")
     def test_client_create(self, mock_input, mock_pass):
         """ Test client create op
 
@@ -146,7 +146,7 @@ class TestMockServer(MockServer):
 
         # Instantiate Agave object making reference to local mock server.
         local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-        ag = Agave(api_server=local_uri)
+        ag = Tapis(api_server=local_uri)
 
         # Create client.
         ag.clients_create("client-name", "some description")
@@ -155,8 +155,8 @@ class TestMockServer(MockServer):
         assert ag.api_secret == "some secret"
 
 
-    @patch("agavepy.agave.input")                                               
-    @patch("agavepy.clients.delete.getpass.getpass")
+    @patch("tapispy.agave.input")
+    @patch("tapispy.clients.delete.getpass.getpass")
     def test_client_delete(self, mock_input, mock_pass):
         """ Test clients_delete op
 
@@ -169,7 +169,7 @@ class TestMockServer(MockServer):
 
         # Instantiate Agave object making reference to local mock server.
         local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-        ag = Agave(api_server=local_uri)
+        ag = Tapis(api_server=local_uri)
         ag.client_name = "client-name"
         ag.api_key = "some api key"
         ag.api_secret = "some secret"
@@ -181,8 +181,8 @@ class TestMockServer(MockServer):
         assert ag.api_secret == ""
 
 
-    @patch("agavepy.agave.input")
-    @patch("agavepy.clients.list.getpass.getpass")
+    @patch("tapispy.agave.input")
+    @patch("tapispy.clients.list.getpass.getpass")
     def test_clients_list(self, mock_input, mock_pass, capfd):
         """ Test clients listing
 
@@ -195,7 +195,7 @@ class TestMockServer(MockServer):
 
         # Instantiate Agave object making reference to local mock server.
         local_uri = "http://localhost:{port}".format(port=self.mock_server_port)
-        ag = Agave(api_server=local_uri)
+        ag = Tapis(api_server=local_uri)
 
         # List clients.
         ag.clients_list()
@@ -207,8 +207,8 @@ class TestMockServer(MockServer):
         assert "\"GET /clients/v2 HTTP/1.1\" 200" in err 
 
 
-    @patch("agavepy.agave.input")
-    @patch("agavepy.clients.subscribe.getpass.getpass")
+    @patch("tapispy.agave.input")
+    @patch("tapispy.clients.subscribe.getpass.getpass")
     def test_clients_subscribe(self, mock_input, mock_pass, capfd):
         """ Test clients subscribe
         """
@@ -218,7 +218,7 @@ class TestMockServer(MockServer):
 
         # Instantiate Agave object making reference to local mock server.
         local_uri = "http://localhost:{port}".format(port=self.mock_server_port)
-        ag = Agave(api_server=local_uri)
+        ag = Tapis(api_server=local_uri)
 
         # Subscribe a client.
         ag.clients_subscribe("PublicKeys", "v2", "admin", client_name="client")
@@ -229,8 +229,8 @@ class TestMockServer(MockServer):
         assert "200" in err
 
 
-    @patch("agavepy.agave.input")
-    @patch("agavepy.clients.subscribtions.getpass.getpass")
+    @patch("tapispy.agave.input")
+    @patch("tapispy.clients.subscribtions.getpass.getpass")
     def test_clients_subscribtions(self, mock_input, mock_pass, capfd):
         """ Test clients subscribtions
         """
@@ -240,7 +240,7 @@ class TestMockServer(MockServer):
 
         # Instantiate Agave object making reference to local mock server.
         local_uri = "http://localhost:{port}".format(port=self.mock_server_port)
-        ag = Agave(api_server=local_uri)
+        ag = Tapis(api_server=local_uri)
         ag.client_name = "test"
 
         # List subscriptions.

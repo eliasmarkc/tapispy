@@ -19,7 +19,7 @@ except ImportError:
     from mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from agavepy.agave import Agave
+from tapispy.tapis import Tapis
 
 
 # Agave will provide a response with the following format upon a
@@ -93,7 +93,7 @@ class TestMockServer(MockServer):
         MockServer.serve.__func__(cls, MockServerTokenEndpoints)
 
 
-    @patch("agavepy.tokens.create_access_token.getpass.getpass")
+    @patch("tapispy.tokens.create_access_token.getpass.getpass")
     def test_get_access_token(self, mock_pass):
         """ Test access token creation
 
@@ -105,7 +105,7 @@ class TestMockServer(MockServer):
 
         # Instantiate Agave object making reference to local mock server.
         local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-        ag = Agave(api_server=local_uri, username="user")
+        ag = Tapis(api_server=local_uri, username="user")
         ag.api_key = "somekey"
         ag.api_secret = "somesecret"
 
@@ -120,11 +120,11 @@ class TestMockServer(MockServer):
         """ Test refresh token operation
         """
         local_uri = "http://localhost:{port}/".format(port=self.mock_server_port)
-        ag = Agave(api_server=local_uri)
+        ag = Tapis(api_server=local_uri)
         ag.api_key = "xxx"
         ag.api_secret = "xxx"
         ag.refresh_token = "xxx"
-        # See agavepy/agave.py:refresh_tokens() for more info.
+        # See tapispy/tapis.py:refresh_tokens() for more info.
         ag.created_at = str( int(time.time()) - 100 )
         ag.expires_in = str(0)
 

@@ -11,7 +11,7 @@ class AgaveAsyncResponse(object):
     Implements parts of the concurrent.futures.Future interface for nonblocking Agave responses.
     """
     def __init__(self, ag, response):
-        """Construct an asynchronous response object from an Agave response which should be an agavepy.agave.AttrDict
+        """Construct an asynchronous response object from an Agave response which should be an tapispy.agave.AttrDict
         """
         self.ag = ag
         self.response = response

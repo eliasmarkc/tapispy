@@ -1,4 +1,4 @@
-# agavepy test suite.
+# tapispy test suite.
 #
 # To run the tests:
 # 1. create a file, test_credentials.json, in the tests directory with credentials for accessing a tenant (see the ex).
@@ -26,8 +26,8 @@ import time
 import pytest
 import requests
 
-import agavepy.agave as a
-from agavepy.async import AgaveAsyncResponse
+import tapispy.tapis as a
+from tapispy.async import AgaveAsyncResponse
 from . import testdata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -81,7 +81,7 @@ def credentials():
 
 @pytest.fixture(scope='session')
 def agave(credentials):
-    aga = a.Agave(username=credentials.get('username'),
+    aga = a.Tapis(username=credentials.get('username'),
                   password=credentials.get('password'),
                   api_server=credentials.get('apiserver'),
                   api_key=credentials.get('apikey'),
@@ -500,7 +500,7 @@ def test_metadata_admin_pems(agave, credentials):
     md2 = agave.meta.listMetadata(q=json.dumps({'name': name}))
     assert uuid in [md.uuid for md in md2]
     # now, create a new client representing the admin
-    ag = a.Agave(username=credentials.get('admin_username'),
+    ag = a.Tapis(username=credentials.get('admin_username'),
                  password=credentials.get('admin_password'),
                  api_server=credentials.get('apiserver'),
                  api_key=credentials.get('apikey'),
@@ -680,13 +680,13 @@ def test_token_callback(agave, credentials):
         assert kwargs['expires_at']
 
     # create a client with a token callback:
-    ag = a.Agave(username=credentials.get('username'),
-                  password=credentials.get('password'),
-                  api_server=credentials.get('apiserver'),
-                  api_key=credentials.get('apikey'),
-                  api_secret=credentials.get('apisecret'),
-                  verify=credentials.get('verify_certs', True),
-                  token_callback=sample_token_callback)
+    ag = a.Tapis(username=credentials.get('username'),
+                 password=credentials.get('password'),
+                 api_server=credentials.get('apiserver'),
+                 api_key=credentials.get('apikey'),
+                 api_secret=credentials.get('apisecret'),
+                 verify=credentials.get('verify_certs', True),
+                 token_callback=sample_token_callback)
     # once created, let's force a refresh
     ag.token.refresh()
     global token_callback_calls
@@ -695,7 +695,7 @@ def test_token_callback(agave, credentials):
 
 def test_token_access(credentials):
     # create a fresh client
-    ag = a.Agave(username=credentials.get('username'),
+    ag = a.Tapis(username=credentials.get('username'),
                  password=credentials.get('password'),
                  api_server=credentials.get('apiserver'),
                  api_key=credentials.get('apikey'),
@@ -706,7 +706,7 @@ def test_token_access(credentials):
     # force a token refresh
     token = ag.token.refresh()
     # now, create a new client using just the token
-    token_client = a.Agave(api_server=credentials['apiserver'],
+    token_client = a.Tapis(api_server=credentials['apiserver'],
                            token=token,
                            verify=credentials.get('verify_certs', True))
     # make sure the new client works

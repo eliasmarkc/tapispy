@@ -3,7 +3,7 @@ __author__ = 'jstubbs'
 import json
 import os
 
-import agavepy.agave as a
+import tapispy.tapis as a
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 

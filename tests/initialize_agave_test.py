@@ -15,7 +15,7 @@ except ImportError:
     from mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from agavepy.agave import Agave
+from tapispy.tapis import Tapis
 
 
 # The agave API will provide a response with the following format upon a
@@ -30,8 +30,8 @@ class TestAgaveInitialization:
     and listing (HTTP GET request).
     """
     
-    @patch("agavepy.tenants.tenants.get_tenants")
-    @patch("agavepy.agave.input")
+    @patch("tapispy.tenants.tenants.get_tenants")
+    @patch("tapispy.agave.input")
     def test_Agave_init(self, mock_get_tenants, mock_input):
         """ Test Agave initialization
         """
@@ -40,7 +40,7 @@ class TestAgaveInitialization:
         mock_get_tenants.return_value = "sd2e"
 
         # Instantiate Agave object making reference to local mock server.
-        ag = Agave()
+        ag = Tapis()
         ag.init()
 
         assert ag.tenant_id == "sd2e"

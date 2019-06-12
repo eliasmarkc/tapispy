@@ -17,7 +17,7 @@ except ImportError:
     from mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from agavepy.agave import Agave
+from tapispy.tapis import Tapis
 
 
 # The agave API will provide a response with the following format upon a
@@ -35,7 +35,7 @@ class TestSaveConfigs:
     and listing (HTTP GET request).
     """
     
-    @patch("agavepy.tenants.tenants.get_tenants")
+    @patch("tapispy.tenants.tenants.get_tenants")
     def test_save_configs(self, mock_get_tenants):
         """ Test Agave initialization
         """
@@ -48,19 +48,19 @@ class TestSaveConfigs:
             # create a tmp dir and use it as a cache dir.
             cache_dir = tempfile.mkdtemp()
 
-            a = Agave(tenant_id="sd2e")
+            a = Tapis(tenant_id="sd2e")
             a.init()
             a.client_name = "client-1"
             a.username = "user-1"
             a.save_configs(cache_dir)
 
-            b = Agave(tenant_id="tacc.prod")
+            b = Tapis(tenant_id="tacc.prod")
             b.init()
             b.client_name = "client-2"
             b.username = "user-2"
             b.save_configs(cache_dir)
 
-            c = Agave(tenant_id="sd2e")
+            c = Tapis(tenant_id="sd2e")
             c.init()
             c.client_name = "client-3"
             c.username = "user-3"
@@ -77,7 +77,7 @@ class TestSaveConfigs:
             shutil.rmtree(cache_dir)
 
 
-    @patch("agavepy.tenants.tenants.get_tenants")
+    @patch("tapispy.tenants.tenants.get_tenants")
     def test_load_configs(self, mock_get_tenants):
         """ Test load_configs function
         """
@@ -88,7 +88,7 @@ class TestSaveConfigs:
             with open("{}/config.json".format(cache_dir), "w") as f:
                 json.dump(sample_config, f, indent=4)
 
-            ag = Agave()
+            ag = Tapis()
             ag.load_configs(cache_dir=cache_dir)
 
             sample_client = list(sample_config["current"].keys())[0]
@@ -100,7 +100,7 @@ class TestSaveConfigs:
             shutil.rmtree(cache_dir)
 
 
-    @patch("agavepy.tenants.tenants.get_tenants")
+    @patch("tapispy.tenants.tenants.get_tenants")
     def test_load_configs_specify_session(self, mock_get_tenants):
         """ Test load_configs function
 
@@ -113,7 +113,7 @@ class TestSaveConfigs:
             with open("{}/config.json".format(cache_dir), "w") as f:
                 json.dump(sample_config, f, indent=4)
 
-            ag = Agave()
+            ag = Tapis()
             ag.load_configs(cache_dir=cache_dir, tenant_id="tacc.prod", 
                     username="user-2", client_name="client-2")
 

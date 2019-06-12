@@ -2,9 +2,9 @@
 # These tests should be run for deployments/tenants that are making critical use of the admin services.
 #
 # To run the tests:
-# 0. If wanting to run against the local copy of agavepy, make sure to activate a virtualenv that does
+# 0. If wanting to run against the local copy of tapispy, make sure to activate a virtualenv that does
 #     not have it installed, and then run out of the project root and preface the test files accordingly,
-#     e.g., py.test agavepy/tests/test_admin.py
+#     e.g., py.test tapispy/tests/test_admin.py
 #
 # 1. create a file, test_credentials_admin_tests.json, in the tests directory with credentials for accessing the admin
 #    services within a tenant. In particular, you need:
@@ -34,8 +34,8 @@ import time
 import pytest
 import requests
 
-import agavepy.agave as a
-from agavepy.async import AgaveAsyncResponse
+import tapispy.tapis as a
+from tapispy.async import AgaveAsyncResponse
 import testdata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -49,7 +49,7 @@ def credentials():
 
 @pytest.fixture(scope='session')
 def agave(credentials):
-    aga = a.Agave(username=credentials.get('username'),
+    aga = a.Tapis(username=credentials.get('username'),
                   password=credentials.get('password'),
                   api_server=credentials.get('apiserver'),
                   api_key=credentials.get('apikey'),

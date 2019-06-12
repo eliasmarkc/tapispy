@@ -6,8 +6,8 @@ import time
 import pytest
 import requests
 
-import agavepy.agave as a
-from agavepy.async import AgaveAsyncResponse
+import tapispy.tapis as a
+from tapispy.async import AgaveAsyncResponse
 from . import testdata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -62,7 +62,7 @@ def credentials():
 
 @pytest.fixture(scope='session')
 def agave(credentials):
-    aga = a.Agave(username=credentials.get('username'),
+    aga = a.Tapis(username=credentials.get('username'),
                   password=credentials.get('password'),
                   api_server=credentials.get('apiserver'),
                   api_key=credentials.get('apikey'),
@@ -74,7 +74,7 @@ def agave(credentials):
 
 
 def test_profiles_username(agave, credentials):
-    '''verify that agavepy and testing view of username is same'''
+    '''verify that tapispy and testing view of username is same'''
     username = agave.profiles.get()['username']
     assert credentials['username'] == username
     print(agave.profiles.get())

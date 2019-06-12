@@ -20,12 +20,12 @@ PWD = os.getcwd()
 # Excludes at the Service and Operation level
 #   Used to soft-deprecate APIs or Swagger defs that
 #   are too broken to use
-SVC_BLACKLIST = ('agavepy.clients', 'agavepy.transforms',
-                 'agavepy.admin', 'agavepy.postits')
-API_BLACKLIST = ('agavepy.apps.getJobSubmissionForm',
-                 'agavepy.apps.listByOntologyTerm',
-                 'agavepy.apps.listByTag')
-SVC_WHITELIST = ('agavepy.files')
+SVC_BLACKLIST = ('tapispy.clients', 'tapispy.transforms',
+                 'tapispy.admin', 'tapispy.postits')
+API_BLACKLIST = ('tapispy.apps.getJobSubmissionForm',
+                 'tapispy.apps.listByOntologyTerm',
+                 'tapispy.apps.listByTag')
+SVC_WHITELIST = ('tapispy.files')
 
 # Jina is told to treat all of HERE as a templates
 # directory so this is essentially a placeholder
@@ -67,7 +67,7 @@ class ConfigGen(object):
 
 
 def mod_name(api_name):
-    return '.'.join(['agavepy', api_name])
+    return '.'.join(['tapispy', api_name])
 
 
 def submod_name(api_name, mod_name):
@@ -158,7 +158,7 @@ def load_resource(resource_file, api_server='https://api.tacc.cloud'):
     :type api_server: str
     :rtype: dict
     """
-    conf = ConfigGen(os.path.join('agavepy', resource_file))
+    conf = ConfigGen(os.path.join('tapispy', resource_file))
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(PWD),
                              trim_blocks=True, lstrip_blocks=True)
     rsrcs = json.loads(conf.compile(
@@ -235,7 +235,7 @@ def main():
             print("{}/".format(api_name))
 
             f = open(os.path.join(PWD, DEST, api_name + '.rst'), 'w')
-            # example: agavepy.apps
+            # example: tapispy.apps
             f.write(rst_heading(api_name, 'subtitle') + '\n\n')
             f.write("Summary: {}".format(api.get('description')) + '\n\n')
 
@@ -261,7 +261,7 @@ def main():
 
                 for op in op_list:
                 #for op in sub_api.get('operations'):
-                    # agavepy.apps.list
+                    # tapispy.apps.list
                     submod_name_path = submod_name(
                         op.get('nickname'), api_name)
                     if submod_name_path not in API_BLACKLIST:
@@ -347,13 +347,13 @@ def main():
                             elif resp_type_obj in ('string', 'integer', 'int', 'boolean'):
                                 resp_string = resp_type_obj.capitalize()
                             else:
-                                # agavepy class object
+                                # tapispy class object
                                 resp_schema_type = resp_type_obj
                                 resp_string = "A single {} object".format(resp_type_obj)
 
                         f.write('    * ' + rst_italic(resp_string) + '\n\n')
 
-                        # print schema if response is single or array of agavepy class obj
+                        # print schema if response is single or array of tapispy class obj
                         if resp_schema_type is not None:
                             if resp_schema_type in classmods:
                                 f.write(rst_bold(resp_schema_type +

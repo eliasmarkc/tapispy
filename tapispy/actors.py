@@ -11,24 +11,24 @@ import requests
 import socket
 import time
 
-from .agave import Agave, AgaveError, AttrDict
+from .tapis import Tapis, AgaveError, AttrDict
 
 
 def get_client():
     """Returns a pre-authenticated Agave client using the abaco environment variables."""
     # if we have an access token, use that:
     if os.environ.get('_abaco_access_token'):
-        ag = Agave(api_server=os.environ.get('_abaco_api_server'),
+        ag = Tapis(api_server=os.environ.get('_abaco_api_server'),
                    token=os.environ.get('_abaco_access_token'))
     elif os.environ.get('_abaco_api_server'):
         # otherwise, create a client with a fake JWT. this will only work in testing scenarios.
-        ag = Agave(api_server=os.environ.get('_abaco_api_server'),
+        ag = Tapis(api_server=os.environ.get('_abaco_api_server'),
                    jwt='123',
                    jwt_header_name='X-JWT-Assertion-dev_sandbox')
     else:
         # try to use ~/.agave/current to support purely local testing
         try:
-            ag = Agave.restore()
+            ag = Tapis.restore()
         except Exception as e:
             raise AgaveError(
                 "Unable to instantiate an Agave client: {}".format(e))
@@ -204,7 +204,7 @@ class AbacoExecutor(object):
             ag.actors.addWorker(actorId=self.actor_id,
                                 body={'num': self.num_workers})
         except TypeError:
-            # this is an issue in agavepy; swallow these for now until it is fixed
+            # this is an issue in tapispy; swallow these for now until it is fixed
             pass
         except Exception as e:
             raise AgaveError("Unable to add workers for actor. Exceptoion: {}".format(e))

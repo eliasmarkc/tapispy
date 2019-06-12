@@ -27,7 +27,17 @@ To see all available tenants and chose one to interact with, one can do the
 following:
 
 .. code-block:: pycon
-    
+
+    >>> from tapispy.agave import Agave
+    >>> agave = Agave()
+    >>> agave.init()
+    ID                   NAME                                     URL
+    3dem                 3dem Tenant
+    >>> from tapispy.agave import Agave
+    >>> agave = Agave()
+    >>> agave.init()
+    ID                   NAME                                     URL
+    3dem                 3dem Tenant
     >>> from agavepy.agave import Agave
     >>> agave = Agave()
     >>> agave.init()
@@ -83,6 +93,16 @@ To reuse it, simply instantiate an ``Agave`` object use the method
 
 .. code-block:: pycon
 
+    >>> from tapispy.agave import Agave
+    >>> agave = Agave()
+    >>> agave.load_configs()
+    >>> agave.tenant_id, agave.api_server
+    ('sd2e', 'https://api.sd2e.org/')
+    >>> from tapispy.agave import Agave
+    >>> agave = Agave()
+    >>> agave.load_configs()
+    >>> agave.tenant_id, agave.api_server
+    ('sd2e', 'https://api.sd2e.org/')
     >>> from agavepy.agave import Agave
     >>> agave = Agave()
     >>> agave.load_configs()
