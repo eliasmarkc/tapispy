@@ -6,7 +6,7 @@ class Error(Exception):
 class TimeoutError(Error):
     pass
 
-class AgaveAsyncResponse(object):
+class TapisAsyncResponse(object):
     """
     Implements parts of the concurrent.futures.Future interface for nonblocking Agave responses.
     """

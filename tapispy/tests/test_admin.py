@@ -35,7 +35,7 @@ import pytest
 import requests
 
 import tapispy.tapis as a
-from tapispy.async import AgaveAsyncResponse
+from tapispy.async import TapisAsyncResponse
 import testdata
 
 HERE = os.path.dirname(os.path.abspath(__file__))

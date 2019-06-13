@@ -28,7 +28,7 @@ import pytest
 import requests
 
 import tapispy.tapis as a
-from tapispy.async import AgaveAsyncResponse
+from tapispy.async import TapisAsyncResponse
 import testdata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -57,7 +57,7 @@ def test_upload_large_file(agave, credentials):
     rsp = agave.files.importData(systemId=credentials['storage'],
                                  filePath=credentials['storage_user'],
                                  fileToUpload=open('test_largefile_upload_python_sdk', 'rb'))
-    arsp = AgaveAsyncResponse(agave, rsp)
+    arsp = TapisAsyncResponse(agave, rsp)
     status = arsp.result(timeout=120)
     assert status == 'FINISHED'
 

@@ -11,7 +11,7 @@ import requests
 import socket
 import time
 
-from .tapis import Tapis, AgaveError, AttrDict
+from .tapis import Tapis, TapisError, AttrDict
 
 
 def get_client():
@@ -30,7 +30,7 @@ def get_client():
         try:
             ag = Tapis.restore()
         except Exception as e:
-            raise AgaveError(
+            raise TapisError(
                 "Unable to instantiate an Agave client: {}".format(e))
 
     return ag
@@ -106,7 +106,7 @@ def send_python_result(obj):
     except Exception as e:
         msg = "Could not serialize {}; got exception: {}".format(obj, e)
         print(msg)
-        raise AgaveError(msg)
+        raise TapisError(msg)
     send_bytes_result(b)
 
 def send_bytes_result(b):
@@ -118,14 +118,14 @@ def send_bytes_result(b):
     if not isinstance(b, bytes):
         msg = "send_bytes_result did not receive bytes, got: {}".format(b)
         print(msg)
-        raise AgaveError(msg)
+        raise TapisError(msg)
     sock = _get_results_socket()
     try:
         sock.send(b)
     except Exception as e:
         msg = "Got exception sending bytes over results socket: {}".format(e)
         print(msg)
-        raise AgaveError(msg)
+        raise TapisError(msg)
 
 def _get_results_socket():
     """Instantiate the results socket for sending binary results."""
@@ -136,7 +136,7 @@ def _get_results_socket():
     except (FileNotFoundError, ConnectionError) as e:
         msg = "Exception connecting to results socket: {}".format(e)
         print(msg)
-        raise AgaveError(msg)
+        raise TapisError(msg)
     return client
 
 
@@ -191,7 +191,7 @@ class AbacoExecutor(object):
                                           'stateless': True,
                                           'name': 'agpy_abaco_executor'})
             except Exception as e:
-                raise AgaveError("Unable to register the actor; exception: {}".format(e))
+                raise TapisError("Unable to register the actor; exception: {}".format(e))
             self.actor_id = rsp['id']
             self.status = 'SUBMITTED'
 
@@ -207,7 +207,7 @@ class AbacoExecutor(object):
             # this is an issue in tapispy; swallow these for now until it is fixed
             pass
         except Exception as e:
-            raise AgaveError("Unable to add workers for actor. Exceptoion: {}".format(e))
+            raise TapisError("Unable to add workers for actor. Exceptoion: {}".format(e))
 
     def _update_status(self):
         status = self.ag.actors.get(actorId=self.actor_id).get('status')
@@ -240,7 +240,7 @@ class AbacoExecutor(object):
         rsp = self.ag.actors.sendBinaryMessage(actorId=self.actor_id, message=message, headers=headers)
         execution_id = rsp.get('executionId')
         if not execution_id:
-            raise AgaveError("Error submitting function call. Did not get an execution id; response: {}".format(rsp))
+            raise TapisError("Error submitting function call. Did not get an execution id; response: {}".format(rsp))
         return AbacoAsyncResponse(self.ag, self.actor_id, execution_id, )
 
 
@@ -252,7 +252,7 @@ class AbacoExecutor(object):
         if not kwargs_list:
             kwargs_list = [{} for i in args_list]
         if not len(args_list) == len(kwargs_list):
-            raise AgaveError("map requires lists of equal length")
+            raise TapisError("map requires lists of equal length")
         return [self.submit(fn, *args, **kwargs) for args, kwargs in zip(args_list, kwargs_list)]
 
     def delete(self):

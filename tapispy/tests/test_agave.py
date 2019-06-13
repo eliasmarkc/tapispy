@@ -27,7 +27,7 @@ import pytest
 import requests
 
 import tapispy.tapis as a
-from tapispy.async import AgaveAsyncResponse
+from tapispy.async import TapisAsyncResponse
 from . import testdata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -258,7 +258,7 @@ def test_upload_file(agave, credentials):
     rsp = agave.files.importData(systemId=credentials['storage'],
                                  filePath=credentials['storage_user'],
                                  fileToUpload=open('test_file_upload_python_sdk', 'rb'))
-    arsp = AgaveAsyncResponse(agave, rsp)
+    arsp = TapisAsyncResponse(agave, rsp)
     status = arsp.result(timeout=120)
     assert status == 'FINISHED'
 
@@ -285,7 +285,7 @@ def test_upload_binary_file(agave, credentials):
     rsp = agave.files.importData(systemId=credentials['storage'],
                                  filePath=credentials['storage_user'],
                                  fileToUpload=open('test_upload_python_sdk_g_art.mov', 'rb'))
-    arsp = AgaveAsyncResponse(agave, rsp)
+    arsp = TapisAsyncResponse(agave, rsp)
     status = arsp.result(timeout=120)
     assert status == 'FINISHED'
 
@@ -349,7 +349,7 @@ def test_submit_job(agave, test_job):
     job = agave.jobs.submit(body=test_job)
     validate_job(job)
     # create an async object
-    arsp = AgaveAsyncResponse(agave, job)
+    arsp = TapisAsyncResponse(agave, job)
     # block until job finishes with a timeout of 3 minutes.
     assert arsp.result(180) == 'FINISHED'
 
@@ -393,7 +393,7 @@ def test_submit_archive_job(agave, test_job, credentials):
     job = agave.jobs.submit(body=test_job)
     validate_job(job)
     # create an async object
-    arsp = AgaveAsyncResponse(agave, job)
+    arsp = TapisAsyncResponse(agave, job)
     # block until job finishes with a timeout of 3 minutes.
     assert arsp.result(180) == 'FINISHED'
     # now check that the result was archived

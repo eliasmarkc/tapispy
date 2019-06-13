@@ -222,7 +222,7 @@ class Token(object):
         return self._token(data)
 
 
-class AgaveError(Exception):
+class TapisError(Exception):
     pass
 
 
@@ -268,11 +268,11 @@ class Tapis(object):
         self.resource_exceptions = json.load(open(os.path.join(HERE, 'resource_exceptions.json'), 'r'))
         self.host = urllib.parse.urlsplit(self.api_server).netloc
         if self.token_callback and not hasattr(self.token_callback, '__call__'):
-            raise AgaveError('token_callback must be callable.')
+            raise TapisError('token_callback must be callable.')
         # If we are passed a JWT directly, we can bypass all OAuth-related tasks
         if self.jwt:
             if not self.header_name:
-                raise AgaveError("The jwt header name is required to use the jwt authenticator.")
+                raise TapisError("The jwt header name is required to use the jwt authenticator.")
         self.token = None
         if self.api_key is not None and self.api_secret is not None and self.jwt is None:
             self.set_client(self.api_key, self.api_secret)
@@ -293,7 +293,7 @@ class Tapis(object):
         self.all = None
         self.refresh_aris()
         if not hasattr(self, 'apps'):
-            raise AgaveError('Required parameters for client instantiation missing.')
+            raise TapisError('Required parameters for client instantiation missing.')
 
     def to_dict(self):
         """Return a dictionary representing this client."""
@@ -373,7 +373,7 @@ class Tapis(object):
         """Restore a client from a specific attr."""
         clients = Tapis._read_clients()
         if len(clients) == 0:
-            raise AgaveError("No clients found.")
+            raise TapisError("No clients found.")
         # if no attribute was passed, we'll just restore the first client in the list:
         if len(list(kwargs.items())) == 0:
             return Tapis(**clients[0])
@@ -381,7 +381,7 @@ class Tapis(object):
             for client in clients:
                 if client.get(k) == v:
                     return Tapis(**client)
-        raise AgaveError("No matching client found.")
+        raise TapisError("No matching client found.")
 
     @classmethod
     def restore(cls, api_key=None, client_name=None, tenant_id=None):
@@ -512,13 +512,13 @@ class Tapis(object):
             elif '/outputs/media/' in uri:
                 download_url = uri
             else:
-                raise AgaveError("Unsupported jobs URI.")
+                raise TapisError("Unsupported jobs URI.")
         elif 'agave://' in uri:
             # assume it is an agave uri
             system_id, path = uri.split('agave://')[1].split('/', 1)
             download_url = '{}/files/v2/media/system/{}/{}'.format(self.api_server, system_id, path)
         else:
-            raise AgaveError("Unsupported URI.")
+            raise TapisError("Unsupported URI.")
         f = requests.get
         with open(local_path, 'wb') as loc:
             rsp = with_refresh(self.client, f, download_url,
@@ -527,7 +527,7 @@ class Tapis(object):
                                proxies=self.proxies)
             rsp.raise_for_status()
             if type(rsp) == dict:
-                raise AgaveError("Error downloading file at URI: {}, Response: {}".format(uri, rsp))
+                raise TapisError("Error downloading file at URI: {}, Response: {}".format(uri, rsp))
             for block in rsp.iter_content(1024):
                 if not block:
                     break
